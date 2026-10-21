@@ -1,0 +1,20 @@
+{
+  "name": "site-cloner",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Clonador local e auditável de sites (Playwright + Goclone). Sem websnap, sem telemetria.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "clone": "node scripts/clone.mjs",
+    "clone:goclone": "bash scripts/mirror-goclone.sh",
+    "install:browser": "npx playwright install chromium",
+    "validate": "node scripts/validate.mjs",
+    "test:smoke": "node scripts/clone.mjs https://example.com/ --depth 0 --out ./output/smoke --wait 300 && node scripts/validate.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.64.1"
+  }
+}
