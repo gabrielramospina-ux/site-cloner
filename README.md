@@ -2,11 +2,22 @@
 
 Clonador **local, auditável e sem telemetria** — HTML renderizado + CSS/JS/imagens para arquivo offline.
 
+## Começar (branch pronta para usar)
+
 ```bash
+git clone -b release/site-cloner-dacd --single-branch \
+  https://github.com/gabrielramospina-ux/cursor-design-kit.git site-cloner
+cd site-cloner
 npm install
 npm run install:browser
 npm run validate
 npm run clone -- https://vdkids.com.br/ --depth 2
+```
+
+Para publicar como repositório GitHub próprio (o agent não tem permissão de criar repo novo):
+
+```bash
+gh repo create site-cloner --public --source=. --remote=origin --push
 ```
 
 ## Segurança (resumo)
