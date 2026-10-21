@@ -11,6 +11,7 @@
     "clone": "node scripts/clone.mjs",
     "clone:goclone": "bash scripts/mirror-goclone.sh",
     "install:browser": "npx playwright install chromium",
+    "serve": "node scripts/serve.mjs",
     "validate": "node scripts/validate.mjs",
     "test:smoke": "node scripts/clone.mjs https://example.com/ --depth 0 --out ./output/smoke --wait 300 && node scripts/validate.mjs"
   },

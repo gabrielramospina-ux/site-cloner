@@ -41,6 +41,10 @@ Detalhes em [SECURITY.md](./SECURITY.md).
 # SPA / Next.js (recomendado)
 npm run clone -- https://exemplo.com --depth 2
 
+# Servir o clone no localhost (mapeia /_next, /brand, /media → _assets/)
+npm run serve -- ./output/vdkids
+# → http://127.0.0.1:4173/
+
 # Site estático (Goclone)
 go install github.com/goclone-dev/goclone/cmd/goclone@latest
 export PATH="$(go env GOPATH)/bin:$PATH"
