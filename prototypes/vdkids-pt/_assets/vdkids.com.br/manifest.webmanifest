@@ -1,0 +1,8 @@
+{
+  "name": "vdkids.com.br",
+  "short_name": "vdkids.com.br",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111418",
+  "theme_color": "#111418"
+}

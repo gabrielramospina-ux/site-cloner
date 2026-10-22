@@ -1,0 +1,87 @@
+{
+  "tool": "site-cloner",
+  "version": "1.3.0",
+  "source": "https://vdkids.com.br/pt-br/",
+  "capturedAt": "2026-10-22T13:19:06.158Z",
+  "localOnly": true,
+  "pathPrefix": "/pt-br/",
+  "waitUntil": "load",
+  "entry": "pt-br/index.html",
+  "serveHint": "npm run serve -- output/vdkids-pt",
+  "pages": [
+    {
+      "url": "https://vdkids.com.br/pt-br/",
+      "file": "pt-br/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/sobre-nos/",
+      "file": "pt-br/sobre-nos/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/contato/",
+      "file": "pt-br/contato/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/consultoria-comercio-exterior/",
+      "file": "pt-br/servicos/consultoria-comercio-exterior/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/gestao-importacao-exportacao/",
+      "file": "pt-br/servicos/gestao-importacao-exportacao/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/logistica-internacional/",
+      "file": "pt-br/servicos/logistica-internacional/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/transporte-aereo/",
+      "file": "pt-br/servicos/transporte-aereo/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/transporte-maritimo/",
+      "file": "pt-br/servicos/transporte-maritimo/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/transporte-rodoviario/",
+      "file": "pt-br/servicos/transporte-rodoviario/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/sea-air/",
+      "file": "pt-br/servicos/sea-air/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/carga-projeto/",
+      "file": "pt-br/servicos/carga-projeto/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/carga-dgr/",
+      "file": "pt-br/servicos/carga-dgr/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/carga-perecivel/",
+      "file": "pt-br/servicos/carga-perecivel/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/armazenagem/",
+      "file": "pt-br/servicos/armazenagem/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/consolidacao-carga/",
+      "file": "pt-br/servicos/consolidacao-carga/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/carga-inbound/",
+      "file": "pt-br/servicos/carga-inbound/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/seguro-internacional/",
+      "file": "pt-br/servicos/seguro-internacional/index.html"
+    },
+    {
+      "url": "https://vdkids.com.br/pt-br/servicos/",
+      "file": "pt-br/servicos/index.html"
+    }
+  ],
+  "assets": 136,
+  "harvested": 87
+}
