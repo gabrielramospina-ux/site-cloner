@@ -1,27 +1,43 @@
 # Protótipo estático — vdkids / Kyrios (PT)
 
-Espelho do front em `https://vdkids.com.br/pt-br/` para referência e edição local.
+## Por que o index.html “não abre”?
 
-## Abrir
+Se você der **duplo clique** no `index.html`, o Chrome tenta ir para `C:/pt-br/` e mostra **ERR_FILE_NOT_FOUND**.
 
-Na raiz do `site-cloner`:
+Isso é normal: o site usa caminhos absolutos (`/pt-br/`, `/_next/…`). No protocolo `file://` o Windows trata `/pt-br/` como pasta na unidade C:, que não existe.
+
+**Não abra pelo Explorer.** Use um servidor local (abaixo).
+
+## Windows (mais fácil)
+
+1. Copie a pasta `vdkids-pt` (ou descompacte o zip) para o PC  
+2. Dê duplo clique em **`ABRIR-WINDOWS.bat`**  
+3. O navegador abre em http://127.0.0.1:4173/pt-br/  
+4. Deixe a janela preta aberta enquanto usar o site  
+
+(Precisa ter [Node.js](https://nodejs.org) instalado.)
+
+## Manual (qualquer OS)
+
+```bash
+cd vdkids-pt
+npx --yes serve -l 4173 .
+```
+
+Abra: http://127.0.0.1:4173/pt-br/
+
+No repo `site-cloner`:
 
 ```bash
 npm run serve -- ./prototypes/vdkids-pt
 ```
 
-Abra http://127.0.0.1:4173/pt-br/
+## Copiar para outro repo
 
-Ou descompacte/use a pasta direto com qualquer servidor estático (`npx serve`).
-
-## O que dá para editar
-
-- Textos e markup em `pt-br/**/index.html`
-- Imagens/logos em `_assets/vdkids.com.br/brand` e `media`
-- CSS em `_assets/.../_next/static/chunks/*.css` (com cuidado)
+Leve a pasta inteira `vdkids-pt` (ou `vdkids-pt-frontend.zip`).  
+Lá, use o mesmo `ABRIR-WINDOWS.bat` ou `npx serve`.
 
 ## Limite
 
-Isto **não** é o código-fonte Next.js. Scripts `/_next` esperam hidratação; mudanças grandes em HTML podem quebrar animações/JS. Para um app editável de verdade, recrie o front no outro repo usando esta pasta como referência visual/conteúdo.
-
-Arquivo único: `../vdkids-pt-frontend.zip`
+É espelho HTML + assets (front). Animações funcionam **com o servidor**.  
+Não é o código-fonte Next.js editável como app.
