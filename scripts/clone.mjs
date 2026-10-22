@@ -213,26 +213,8 @@ function harvestAssetUrls(html, pageUrl) {
 }
 
 /**
- * Remove estilos inline deixados pelo GSAP/Motion no meio da animação
- * (opacity:0 / visibility:hidden), para o HTML estático mostrar o conteúdo
- * e o JS poder reanimar do zero no localhost.
- */
-function stripFrozenMotionStyles(html) {
-  return html.replace(/\sstyle="([^"]*)"/gi, (full, style) => {
-    const s = style.toLowerCase();
-    const looksFrozen =
-      (s.includes("opacity: 0") || s.includes("opacity:0")) &&
-      (s.includes("visibility: hidden") ||
-        s.includes("visibility:hidden") ||
-        s.includes("transform:"));
-    if (!looksFrozen) return full;
-    return "";
-  });
-}
-
-/**
  * Mantém /_next, /media, /brand absolutos (serve + hidratação Next).
- * Links de página internos → paths absolutos do site (/pt-br/…).
+ * Só reescreve <a href> / action de páginas — nunca toca em <script> RSC.
  */
 function rewriteHtml(html, pageUrl, pageUrlToLocal) {
   const base = new URL(pageUrl);
@@ -254,21 +236,28 @@ function rewriteHtml(html, pageUrl, pageUrlToLocal) {
     return local || null;
   };
 
-  html = stripFrozenMotionStyles(html);
+  // Reescreve só atributos href/action fora de <script>…</script>
+  const parts = html.split(/(<script\b[^>]*>[\s\S]*?<\/script>)/gi);
+  for (let i = 0; i < parts.length; i++) {
+    if (/^<script\b/i.test(parts[i])) continue;
+    parts[i] = parts[i].replace(
+      /(href|action)=["']([^"']+)["']/gi,
+      (match, attr, raw) => {
+        const local = mapPageHref(raw);
+        if (!local) return match;
+        return `${attr}="${local}"`;
+      }
+    );
+  }
+  return parts.join("");
+}
 
-  html = html.replace(
-    /(href|action)=["']([^"']+)["']/gi,
-    (match, attr, raw) => {
-      const local = mapPageHref(raw);
-      if (!local) return match;
-      return `${attr}="${local}"`;
-    }
+/** Repara escapes RSC se algum passo anterior quebrou \" após .js */
+function repairRscEscapes(html) {
+  return html.replace(
+    /(\/_next\/static\/[^"\\]+?\.(?:js|css))"(\])/g,
+    '$1\\"$2'
   );
-
-  // Escapes quebrados em payloads RSC: /_next/....js\
-  html = html.replace(/(\/_next\/[^"'\\\s]+)\\(?=["'])/g, "$1");
-
-  return html;
 }
 
 async function dismissIntro(page) {
@@ -443,14 +432,30 @@ async function main() {
     seenPages.add(url);
 
     const page = await context.newPage();
+    /** HTML SSR original do document — evita DOM mutado pelo GSAP (quebra hidratação). */
+    let ssrHtml = null;
+
     page.on("response", (response) => {
       const task = (async () => {
         try {
           const req = response.request();
-          if (req.resourceType() === "document") return;
+          const resUrl = response.url();
           const status = response.status();
           if (status < 200 || status >= 400) return;
-          const resUrl = response.url();
+
+          if (req.resourceType() === "document") {
+            // Captura o HTML de rede (pré-JS), não o DOM pós-animação
+            const same =
+              resUrl === url ||
+              resUrl === url.replace(/\/$/, "") ||
+              resUrl + "/" === url;
+            if (same || new URL(resUrl).pathname === new URL(url).pathname) {
+              const text = await response.text().catch(() => null);
+              if (text && text.includes("<html")) ssrHtml = text;
+            }
+            return;
+          }
+
           if (savedAssets.has(resUrl) || resUrl.startsWith("data:")) return;
           let u;
           try {
@@ -483,6 +488,7 @@ async function main() {
       continue;
     }
 
+    // Interage só para disparar lazy-load de assets (HTML salvo = SSR)
     await dismissIntro(page);
     await waitForHero(page);
     await sleep(args.waitMs);
@@ -493,22 +499,29 @@ async function main() {
       } catch {
         /* ignore */
       }
-      await sleep(500);
-      // Volta ao topo com conteúdo revelado pelo scroll
-      try {
-        await page.evaluate(() => window.scrollTo(0, 0));
-      } catch {
-        /* ignore */
-      }
-      await sleep(300);
+      await sleep(400);
     }
 
     await Promise.allSettled([...pendingAssetWrites]);
 
-    // Captura após scroll; estilos GSAP congelados são limpos no rewriteHtml
-    const html = await page.content();
+    // Fallback: se a resposta document não veio, usa DOM (pior para hidratação)
+    let html = ssrHtml;
+    if (!html) {
+      console.warn("  ! SSR ausente — usando page.content() (pode quebrar animações)");
+      html = await page.content();
+    }
+
     for (const assetUrl of harvestAssetUrls(html, url)) {
       harvestQueue.add(assetUrl);
+    }
+    // Também colhe do DOM (srcset resolvido / lazy)
+    try {
+      const live = await page.content();
+      for (const assetUrl of harvestAssetUrls(live, url)) {
+        harvestQueue.add(assetUrl);
+      }
+    } catch {
+      /* ignore */
     }
 
     const pageRel = pageRelPath(new URL(url), start.hostname);
@@ -569,7 +582,9 @@ async function main() {
   for (const [pageUrl, rel] of pageFiles) {
     const file = ensureInside(outDir, rel);
     let html = await readFile(file, "utf8");
+    html = repairRscEscapes(html);
     html = rewriteHtml(html, pageUrl, pageUrlToLocal);
+    html = repairRscEscapes(html);
     await writeFile(file, html, "utf8");
   }
 
