@@ -41,6 +41,10 @@ Detalhes em [SECURITY.md](./SECURITY.md).
 # SPA / Next.js (recomendado)
 npm run clone -- https://exemplo.com --depth 2
 
+# Servir o clone no localhost (mapeia /_next, /brand, /media → _assets/)
+npm run serve -- ./output/vdkids
+# → http://127.0.0.1:4173/
+
 # Site estático (Goclone)
 go install github.com/goclone-dev/goclone/cmd/goclone@latest
 export PATH="$(go env GOPATH)/bin:$PATH"
@@ -57,7 +61,21 @@ npm run validate
 | `--depth N` | `1` | 0–5 |
 | `--out DIR` | `output/<host>-<data>` | — |
 | `--max-pages N` | `30` | 1–100 |
-| `--wait MS` | `1500` | 0–30000 |
+| `--wait MS` | `800` | 0–30000 |
+| `--wait-until` | `load` | `load` / `domcontentloaded` / `networkidle` |
+| `--path-prefix /pt-br` | off | só crawla paths nesse prefixo (ex.: ignora `/en`) |
+| `--no-scroll` | off | desliga scroll que dispara lazy-load/animações |
+
+O clonador 1.3 captura **HTML SSR** (não o DOM pós-GSAP), baixa `srcset`, faz harvest paralelo de assets, mantém `/_next`·`/media`·`/brand` absolutos e serve no localhost para hidratar o Next.js.
+
+Front Next (só PT), rápido:
+
+```bash
+npm run clone -- https://vdkids.com.br/pt-br/ \
+  --depth 2 --max-pages 25 --path-prefix /pt-br \
+  --wait-until load --wait 500 --out ./output/vdkids-pt
+npm run serve -- ./output/vdkids-pt
+```
 
 ## Uso responsável
 
