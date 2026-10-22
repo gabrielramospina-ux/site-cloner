@@ -61,7 +61,10 @@ npm run validate
 | `--depth N` | `1` | 0–5 |
 | `--out DIR` | `output/<host>-<data>` | — |
 | `--max-pages N` | `30` | 1–100 |
-| `--wait MS` | `1500` | 0–30000 |
+| `--wait MS` | `2000` | 0–30000 |
+| `--no-scroll` | off | desliga scroll que dispara lazy-load/animações |
+
+O clonador 1.2+ baixa também URLs de `srcset`, pula intros (“Pular introdução”), faz scroll para carregar mídia lazy e mantém `/_next`·`/media`·`/brand` absolutos para o `serve` hidratar o Next.js (animações).
 
 ## Uso responsável
 
